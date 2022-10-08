@@ -1,5 +1,5 @@
 global recent_queries: table[string] of count &create_expire=60secs &default=0;
-global spammy_qureies: set[string] &create_expire=60mins;
+global spammy_queries: set[string] &create_expire=60mins;
 
 function split_dns(id: Log::ID, path: string, rec: DNS::Info): string
 {
@@ -8,10 +8,10 @@ function split_dns(id: Log::ID, path: string, rec: DNS::Info): string
 
     local q = rec$query;
     if (++recent_queries[q] > 500) {
-        add spammy_qureies[q];
+        add spammy_queries[q];
     }
 
-    if ( q in spammy_qureies )
+    if ( q in spammy_queries )
         return "dns_spammy";
 
     return "dns";
